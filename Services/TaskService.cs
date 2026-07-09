@@ -7,10 +7,21 @@ public class TaskService
     private readonly List<TaskItem> _tasks = new();
     private int _nextId = 1;
 
-    public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General, DateTime? dueDate = null)
+    private static void ValidateTaskInput(string title, string? description = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Task title cannot be empty.", nameof(title));
+
+        if (title.Length > 200)
+            throw new ArgumentException("Task title must not exceed 200 characters.", nameof(title));
+
+        if (description is not null && description.Length > 2000)
+            throw new ArgumentException("Task description must not exceed 2000 characters.", nameof(description));
+    }
+
+    public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General, DateTime? dueDate = null)
+    {
+        ValidateTaskInput(title, description);
 
         var task = new TaskItem
         {
