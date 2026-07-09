@@ -9,10 +9,13 @@ public class TaskService
 
     public TaskItem Create(string title, string description)
     {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Task title cannot be empty.", nameof(title));
+
         var task = new TaskItem
         {
             Id = _nextId++,
-            Title = title,
+            Title = title.Trim(),
             Description = description,
             IsCompleted = false,
             CreatedAt = DateTime.UtcNow
