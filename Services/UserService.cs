@@ -25,9 +25,19 @@ public class UserService
         return _users.AsReadOnly();
     }
 
+    public IReadOnlyList<User> GetAllSortedByName()
+    {
+        return _users.OrderBy(u => u.Name).ToList().AsReadOnly();
+    }
+
     public User? GetById(int id)
     {
         return _users.FirstOrDefault(u => u.Id == id);
+    }
+
+    public User? FindByEmail(string email)
+    {
+        return _users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
     }
 
     public bool Delete(int id)
