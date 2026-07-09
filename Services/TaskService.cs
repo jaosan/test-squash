@@ -57,4 +57,9 @@ public class TaskService
         task.AssignedUserId = userId;
         return true;
     }
+
+    public IReadOnlyList<TaskItem> FilterByStatus(bool isCompleted)
+    {
+        return _tasks.Where(t => t.IsCompleted == isCompleted).ToList().AsReadOnly();
+    }
 }
