@@ -89,4 +89,13 @@ public class TaskService
         return _tasks.Where(t => !t.IsCompleted && t.DueDate.HasValue && t.DueDate.Value < DateTime.UtcNow)
                      .ToList().AsReadOnly();
     }
+
+    public IReadOnlyList<TaskItem> Search(string keyword)
+    {
+        var lower = keyword.ToLowerInvariant();
+        return _tasks.Where(t =>
+            t.Title.ToLowerInvariant().Contains(lower) ||
+            t.Description.ToLowerInvariant().Contains(lower))
+            .ToList().AsReadOnly();
+    }
 }
