@@ -7,15 +7,19 @@ public class TaskService
     private readonly List<TaskItem> _tasks = new();
     private int _nextId = 1;
 
-    public TaskItem Create(string title, string description)
+    public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General)
     {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Task title cannot be empty.", nameof(title));
+
         var task = new TaskItem
         {
             Id = _nextId++,
-            Title = title,
+            Title = title.Trim(),
             Description = description,
             IsCompleted = false,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Category = category
         };
         _tasks.Add(task);
         return task;
@@ -61,5 +65,10 @@ public class TaskService
     public IReadOnlyList<TaskItem> FilterByStatus(bool isCompleted)
     {
         return _tasks.Where(t => t.IsCompleted == isCompleted).ToList().AsReadOnly();
+    }
+
+    public IReadOnlyList<TaskItem> GetByCategory(TaskCategory category)
+    {
+        return _tasks.Where(t => t.Category == category).ToList().AsReadOnly();
     }
 }
