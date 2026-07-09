@@ -7,6 +7,13 @@ public static class Utils
         return date.ToString("yyyy-MM-dd HH:mm");
     }
 
+    public static string FormatDueDate(DateTime? dueDate)
+    {
+        if (!dueDate.HasValue) return string.Empty;
+        var isOverdue = dueDate.Value < DateTime.UtcNow;
+        return isOverdue ? $"[OVERDUE: {dueDate.Value:yyyy-MM-dd}]" : $"[due: {dueDate.Value:yyyy-MM-dd}]";
+    }
+
     public static void PrintSeparator()
     {
         Console.WriteLine(new string('-', 50));
