@@ -27,7 +27,7 @@ public class TaskService
         {
             Id = _nextId++,
             Title = title.Trim(),
-            Description = description,
+            Description = description ?? string.Empty,
             IsCompleted = false,
             CreatedAt = DateTime.UtcNow,
             Category = category,
@@ -92,6 +92,8 @@ public class TaskService
 
     public IReadOnlyList<TaskItem> Search(string keyword)
     {
+        if (string.IsNullOrWhiteSpace(keyword)) return GetAll();
+
         var lower = keyword.ToLowerInvariant();
         return _tasks.Where(t =>
             t.Title.ToLowerInvariant().Contains(lower) ||
