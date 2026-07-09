@@ -12,11 +12,11 @@ public class TaskService
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Task title cannot be empty.", nameof(title));
 
-        if (title.Length > 200)
-            throw new ArgumentException("Task title must not exceed 200 characters.", nameof(title));
+        if (title.Length > 150)
+            throw new ArgumentException("Task title must not exceed 150 characters.", nameof(title));
 
-        if (description is not null && description.Length > 2000)
-            throw new ArgumentException("Task description must not exceed 2000 characters.", nameof(description));
+        if (description is not null && description.Length > 1000)
+            throw new ArgumentException("Task description must not exceed 1000 characters.", nameof(description));
     }
 
     public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General, DateTime? dueDate = null)
@@ -88,5 +88,14 @@ public class TaskService
     {
         return _tasks.Where(t => !t.IsCompleted && t.DueDate.HasValue && t.DueDate.Value < DateTime.UtcNow)
                      .ToList().AsReadOnly();
+    }
+
+    public IReadOnlyList<TaskItem> Search(string keyword)
+    {
+        var lower = keyword.ToLowerInvariant();
+        return _tasks.Where(t =>
+            t.Title.ToLowerInvariant().Contains(lower) ||
+            t.Description.ToLowerInvariant().Contains(lower))
+            .ToList().AsReadOnly();
     }
 }
