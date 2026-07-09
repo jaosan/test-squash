@@ -9,4 +9,5 @@ public class TaskItem
     public DateTime CreatedAt { get; set; }
     public int? AssignedUserId { get; set; }
     public TaskCategory Category { get; set; } = TaskCategory.General;
+    public DateTime? DueDate { get; set; }
 }
