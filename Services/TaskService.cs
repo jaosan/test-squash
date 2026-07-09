@@ -7,7 +7,7 @@ public class TaskService
     private readonly List<TaskItem> _tasks = new();
     private int _nextId = 1;
 
-    public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General)
+    public TaskItem Create(string title, string description, TaskCategory category = TaskCategory.General, DateTime? dueDate = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Task title cannot be empty.", nameof(title));
@@ -19,7 +19,8 @@ public class TaskService
             Description = description,
             IsCompleted = false,
             CreatedAt = DateTime.UtcNow,
-            Category = category
+            Category = category,
+            DueDate = dueDate
         };
         _tasks.Add(task);
         return task;
@@ -70,5 +71,11 @@ public class TaskService
     public IReadOnlyList<TaskItem> GetByCategory(TaskCategory category)
     {
         return _tasks.Where(t => t.Category == category).ToList().AsReadOnly();
+    }
+
+    public IReadOnlyList<TaskItem> GetOverdue()
+    {
+        return _tasks.Where(t => !t.IsCompleted && t.DueDate.HasValue && t.DueDate.Value < DateTime.UtcNow)
+                     .ToList().AsReadOnly();
     }
 }
